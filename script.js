@@ -85,10 +85,10 @@ function stopMusic() {
   if (musicGain) musicGain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.25);
 }
 
-function tryStartMusic() {
-  if (musicOn) return;
+async function tryStartMusic() {
   try {
-    startMusic();
+    if (!audioContext) startMusic();
+    if (audioContext.state === 'suspended') await audioContext.resume();
     musicOn = true;
     document.getElementById('musicButton').textContent = '\u23f8';
   } catch (error) {

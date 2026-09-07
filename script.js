@@ -85,6 +85,17 @@ function stopMusic() {
   if (musicGain) musicGain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.25);
 }
 
+function tryStartMusic() {
+  if (musicOn) return;
+  try {
+    startMusic();
+    musicOn = true;
+    document.getElementById('musicButton').textContent = '\u23f8';
+  } catch (error) {
+    // Algunos navegadores exigen una primera interacción para permitir audio.
+  }
+}
+
 document.getElementById('unlockButton').addEventListener('click', unlock);
 document.getElementById('dayInput').addEventListener('keydown', (event) => { if (event.key === 'Enter') unlock(); });
 document.getElementById('memoriesButton').addEventListener('click', () => showScreen('memories'));
@@ -98,6 +109,7 @@ document.getElementById('musicButton').addEventListener('click', () => {
   document.getElementById('musicButton').textContent = musicOn ? '\u23f8' : '\u266b';
   showToast(musicOn ? 'Nuestra canción está sonando' : 'Música pausada');
 });
+window.addEventListener('pointerdown', tryStartMusic, { once: true });
 
 function showToast(message) {
   const toast = document.getElementById('toast');
@@ -109,3 +121,4 @@ function showToast(message) {
 
 updateCounter();
 window.setInterval(updateCounter, 1000);
+tryStartMusic();
